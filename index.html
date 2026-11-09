@@ -6724,6 +6724,7 @@ function canResetUserPasswords(user = state.currentUser) {
 function updateAuditViewVisibility(user = state.currentUser) {
   const canAccess = canAccessAuditAndUsers(user);
   const canManage = canManageUsers(user);
+  const canReset = canResetUserPasswords(user);
 
   const btnAddUser = document.getElementById('btn-add-user');
   if (btnAddUser) {
