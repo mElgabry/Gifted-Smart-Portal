@@ -1,0 +1,9 @@
+# ==============================================================================
+# جدولة النسخ الاحتياطي اليومي الآلي لبوابة الموهوبين والتعلم الذكي (Crontab)
+# التثبيت: sudo cp cron_schedule.txt /etc/cron.d/gifted_portal_backup
+# ==============================================================================
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# تشغيل النسخ الاحتياطي يومياً في تمام الساعة 02:00 صباحاً بتوقيت القاهرة
+0 2 * * * postgres /usr/local/bin/pg_backup_daily.sh >> /var/log/pg_backup_cron.log 2>&1
