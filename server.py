@@ -349,6 +349,60 @@ class DatabaseManager:
             "message": f'تم عمل Reset لحساب ({target["name"]}) وجعل كلمة المرور هي "{new_password}"',
         }
 
+    def add_user(self, actor_user_id: str, new_account: dict) -> dict:
+        if actor_user_id not in ("u_abeer", "u_mohamed"):
+            raise ValueError("عذراً: صلاحية إضافة مستخدمين جديدة مكفولة فقط لمدير عام الإدارة العامة للموهوبين ومدير إدارة التعلم الذكي.")
+        if not new_account or not new_account.get("username") or not new_account.get("name"):
+            raise ValueError("بيانات المستخدم الجديد غير مكتملة.")
+
+        clean_user = new_account["username"].strip().lower()
+        auth_db = self.load_users_auth()
+        users = auth_db.get("users", [])
+        if any(u["username"].lower() == clean_user for u in users):
+            raise ValueError("اسم المستخدم هذا مسجل بالفعل.")
+
+        plain_pass = (new_account.get("password") or "6666").strip()
+        account_entry = {
+            "id": new_account.get("id") or ("u_" + clean_user.replace(".", "_") + "_" + str(int(time.time()))[-4:]),
+            "username": clean_user,
+            "aliases": new_account.get("aliases") or [clean_user],
+            "password_hash": hash_bcrypt_password(plain_pass),
+            "name": new_account["name"].strip(),
+            "role": new_account.get("role", "directorate_manager"),
+            "roleName": new_account.get("roleName", "مدير إدارة موهوبين"),
+            "gov": new_account.get("gov", ""),
+            "category": new_account.get("category", "مسئولو المديريات التعليمية (27 محافظة)"),
+            "permission": new_account.get("permission", "عرض وإدخال وتعديل طلاب المديرية"),
+            "status": new_account.get("status", "نشط"),
+            "twoFactor": bool(new_account.get("twoFactor", False)),
+        }
+        users.append(account_entry)
+
+        if os.path.exists(USERS_AUTH_JSON_PATH):
+            with open(USERS_AUTH_JSON_PATH, "w", encoding="utf-8") as f:
+                json.dump(auth_db, f, ensure_ascii=False, indent=2)
+
+        return {"status": "success", "code": 200, "message": f'تمت إضافة المستخدم ({account_entry["name"]}) بنجاح'}
+
+    def delete_user(self, actor_user_id: str, target_user_id: str) -> dict:
+        if actor_user_id not in ("u_abeer", "u_mohamed"):
+            raise ValueError("عذراً: صلاحية حذف الحسابات مكفولة فقط لمدير عام الإدارة العامة للموهوبين ومدير إدارة التعلم الذكي.")
+        if target_user_id in ("u_abeer", "u_mohamed"):
+            raise ValueError("لا يمكن حذف الحسابين القياديين الأساسيين للإدارة العامة.")
+
+        auth_db = self.load_users_auth()
+        users = auth_db.get("users", [])
+        target = next((u for u in users if u["id"] == target_user_id), None)
+        if not target:
+            raise ValueError("لم يتم العثور على الحساب المراد حذفه.")
+
+        auth_db["users"] = [u for u in users if u["id"] != target_user_id]
+        if os.path.exists(USERS_AUTH_JSON_PATH):
+            with open(USERS_AUTH_JSON_PATH, "w", encoding="utf-8") as f:
+                json.dump(auth_db, f, ensure_ascii=False, indent=2)
+
+        return {"status": "success", "code": 200, "message": f'تم حذف حساب ({target["name"]}) بنجاح'}
+
     def get_portal_data(self) -> dict:
         if self.pg_available:
             try:
@@ -562,6 +616,24 @@ class PortalRequestHandler(SimpleHTTPRequestHandler):
                 self._send_json(403, {"status": "error", "code": 403, "message": str(e)})
             return
 
+        # 5. مسار إضافة مستخدم جديد (مخول لمدير عام الإدارة ومدير التعلم الذكي)
+        if path == "/api/v1/auth/add-user":
+            try:
+                result = db_manager.add_user(body.get("actorUserId", ""), body.get("newAccount", {}))
+                self._send_json(200, result)
+            except ValueError as e:
+                self._send_json(403, {"status": "error", "code": 403, "message": str(e)})
+            return
+
+        # 6. مسار حذف مستخدم (مخول لمدير عام الإدارة ومدير التعلم الذكي)
+        if path == "/api/v1/auth/delete-user":
+            try:
+                result = db_manager.delete_user(body.get("actorUserId", ""), body.get("targetUserId", ""))
+                self._send_json(200, result)
+            except ValueError as e:
+                self._send_json(403, {"status": "error", "code": 403, "message": str(e)})
+            return
+
         # 5. مسار تسجيل الخروج
         if path == "/api/v1/auth/logout":
             self._send_json(200, {"status": "success", "code": 200, "message": "تم إنهاء الجلسة بنجاح"})
@@ -593,8 +665,10 @@ class PortalRequestHandler(SimpleHTTPRequestHandler):
 
 
 def run_server():
-    port = find_available_port(8000)
-    server_address = ("127.0.0.1", port)
+    default_port = int(os.environ.get("PORTAL_PORT", 8000))
+    port = find_available_port(default_port)
+    host = os.environ.get("PORTAL_HOST", "0.0.0.0")
+    server_address = (host, port)
 
     try:
         httpd = HTTPServer(server_address, PortalRequestHandler)
