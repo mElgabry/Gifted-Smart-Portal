@@ -1,0 +1,84 @@
+version: "3.9"
+
+services:
+  pg_primary:
+    image: postgres:16-alpine
+    container_name: moe_gifted_pg_primary
+    restart: always
+    environment:
+      POSTGRES_DB: gifted_portal_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: StrongMasterPassword2026!
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_primary_data:/var/lib/postgresql/data/pgdata
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./database/indexes.sql:/docker-entrypoint-initdb.d/02_indexes.sql:ro
+      - ./database/seed_data.sql:/docker-entrypoint-initdb.d/03_seed_data.sql:ro
+    command: >
+      postgres
+      -c wal_level=replica
+      -c max_wal_senders=10
+      -c max_replication_slots=10
+      -c wal_keep_size=1024MB
+      -c hot_standby=on
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d gifted_portal_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pg_standby:
+    image: postgres:16-alpine
+    container_name: moe_gifted_pg_standby
+    restart: always
+    depends_on:
+      pg_primary:
+        condition: service_healthy
+    environment:
+      PGUSER: postgres
+      PGPASSWORD: StrongMasterPassword2026!
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg_standby_data:/var/lib/postgresql/data/pgdata
+    entrypoint: >
+      /bin/sh -c "
+      if [ ! -s /var/lib/postgresql/data/pgdata/PG_VERSION ]; then
+        echo 'Initializing Standby Replica via pg_basebackup...';
+        pg_basebackup -h pg_primary -p 5432 -U postgres -D /var/lib/postgresql/data/pgdata -Fp -Xs -P -R;
+        chmod 0700 /var/lib/postgresql/data/pgdata;
+      fi &&
+      exec docker-entrypoint.sh postgres -c hot_standby=on
+      "
+
+  pg_backup_offsite:
+    image: postgres:16-alpine
+    container_name: moe_gifted_pg_backup
+    restart: always
+    depends_on:
+      pg_primary:
+        condition: service_healthy
+    environment:
+      PG_HOST: pg_primary
+      PG_PORT: 5432
+      PG_DB: gifted_portal_db
+      PG_USER: postgres
+      PGPASSWORD: StrongMasterPassword2026!
+      BACKUP_DIR: /offsite_vault/backups
+    volumes:
+      - offsite_backup_vault:/offsite_vault/backups
+      - ./database/backups/pg_backup_daily.sh:/usr/local/bin/pg_backup_daily.sh:ro
+    entrypoint: >
+      /bin/sh -c "
+      echo '0 2 * * * /bin/sh /usr/local/bin/pg_backup_daily.sh >> /var/log/cron.log 2>&1' > /etc/crontabs/root &&
+      crond -f -l 2
+      "
+
+volumes:
+  pg_primary_data:
+  pg_standby_data:
+  offsite_backup_vault:
