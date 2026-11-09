@@ -1495,6 +1495,66 @@ const AuthServer = {
       newPassword: '6666',
       message: `تم عمل Reset لحساب (${target.name}) وجعل كلمة المرور هي "6666"`
     };
+  },
+
+  async addUser(actorUserId, newAccount) {
+    const addUserEndpoint = '/api/v1/auth/add-user';
+    const res = await fetch(addUserEndpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ actorUserId, newAccount })
+    });
+    const data = await res.json();
+    if (!res.ok || data.status === 'error') {
+      throw new Error(data.message || 'فشل إضافة المستخدم');
+    }
+    return data;
+  },
+
+  async handleServerAddUser(actorUserId, newAccount) {
+    await new Promise(r => setTimeout(r, 200));
+    const actor = ACCOUNTS_DATABASE.find(a => a.id === actorUserId);
+    if (!actor || (actor.id !== 'u_abeer' && actor.id !== 'u_mohamed')) {
+      throw new Error('عذراً: صلاحية إضافة مستخدمين جديدة مكفولة حصرياً لمدير عام الإدارة العامة للموهوبين ومدير إدارة التعلم الذكي.');
+    }
+    if (!newAccount || !newAccount.username || !newAccount.name) {
+      throw new Error('بيانات المستخدم الجديد غير مكتملة.');
+    }
+    return {
+      status: 'success',
+      code: 200,
+      message: `تمت إضافة المستخدم (${newAccount.name}) بنجاح واعتماد حسابه.`
+    };
+  },
+
+  async deleteUser(actorUserId, targetUserId) {
+    const deleteUserEndpoint = '/api/v1/auth/delete-user';
+    const res = await fetch(deleteUserEndpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ actorUserId, targetUserId })
+    });
+    const data = await res.json();
+    if (!res.ok || data.status === 'error') {
+      throw new Error(data.message || 'فشل حذف المستخدم');
+    }
+    return data;
+  },
+
+  async handleServerDeleteUser(actorUserId, targetUserId) {
+    await new Promise(r => setTimeout(r, 200));
+    const actor = ACCOUNTS_DATABASE.find(a => a.id === actorUserId);
+    if (!actor || (actor.id !== 'u_abeer' && actor.id !== 'u_mohamed')) {
+      throw new Error('عذراً: صلاحية حذف الحسابات مكفولة حصرياً لمدير عام الإدارة العامة للموهوبين ومدير إدارة التعلم الذكي.');
+    }
+    if (targetUserId === 'u_abeer' || targetUserId === 'u_mohamed') {
+      throw new Error('لا يمكن حذف الحسابين القياديين الأساسيين.');
+    }
+    return {
+      status: 'success',
+      code: 200,
+      message: 'تم حذف حساب المستخدم نهائياً من المنظومة بنجاح.'
+    };
   }
 };
 
@@ -1548,6 +1608,34 @@ window.fetch = async function(input, init) {
     try {
       const body = init && init.body ? JSON.parse(init.body) : {};
       const result = await AuthServer.handleServerResetPassword(body.actorUserId, body.targetUserId);
+      return new Response(JSON.stringify(result), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (err) {
+      return new Response(JSON.stringify({ status: 'error', code: 403, message: err.message }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  } else if (url && url.includes('/api/v1/auth/add-user')) {
+    try {
+      const body = init && init.body ? JSON.parse(init.body) : {};
+      const result = await AuthServer.handleServerAddUser(body.actorUserId, body.newAccount);
+      return new Response(JSON.stringify(result), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (err) {
+      return new Response(JSON.stringify({ status: 'error', code: 403, message: err.message }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  } else if (url && url.includes('/api/v1/auth/delete-user')) {
+    try {
+      const body = init && init.body ? JSON.parse(init.body) : {};
+      const result = await AuthServer.handleServerDeleteUser(body.actorUserId, body.targetUserId);
       return new Response(JSON.stringify(result), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
@@ -1667,6 +1755,7 @@ const StorageManager = {
     CENTERS: "moe_gifted_centers",
     AUDIT_LOG: "moe_gifted_audit_log",
     PASSWORDS: "moe_gifted_passwords",
+    CUSTOM_USERS: "moe_gifted_custom_accounts",
     LAST_UPDATED: "moe_gifted_last_updated"
   },
 
@@ -1730,6 +1819,43 @@ const StorageManager = {
     if (Array.isArray(data.auditLog) && data.auditLog.length > 0) {
       AUDIT_LOG_DATA.length = 0;
       AUDIT_LOG_DATA.push(...data.auditLog);
+      modified = true;
+    }
+
+    if (Array.isArray(data.customAccounts) && data.customAccounts.length > 0) {
+      data.customAccounts.forEach(ca => {
+        const existIdx = ACCOUNTS_DATABASE.findIndex(a => a.id === ca.id);
+        if (existIdx === -1) {
+          ACCOUNTS_DATABASE.push(ca);
+        } else {
+          ACCOUNTS_DATABASE[existIdx] = Object.assign(ACCOUNTS_DATABASE[existIdx], ca);
+        }
+        const uExistIdx = USERS_DATA.findIndex(u => u.id === ca.id);
+        if (uExistIdx === -1) {
+          USERS_DATA.push({
+            id: ca.id,
+            username: ca.username,
+            aliases: ca.aliases || [ca.username],
+            name: ca.name,
+            role: ca.role,
+            roleName: ca.roleName,
+            gov: ca.gov,
+            permission: ca.permission,
+            status: ca.status,
+            twoFactor: ca.twoFactor
+          });
+        }
+      });
+      modified = true;
+    }
+
+    if (Array.isArray(data.deletedUserIds) && data.deletedUserIds.length > 0) {
+      data.deletedUserIds.forEach(delId => {
+        const aIdx = ACCOUNTS_DATABASE.findIndex(a => a.id === delId);
+        if (aIdx !== -1) ACCOUNTS_DATABASE.splice(aIdx, 1);
+        const uIdx = USERS_DATA.findIndex(u => u.id === delId);
+        if (uIdx !== -1) USERS_DATA.splice(uIdx, 1);
+      });
       modified = true;
     }
 
@@ -1866,8 +1992,53 @@ const StorageManager = {
           });
         }
       }
+      this.loadUsersAndAccounts();
     } catch (e) {
       console.warn("StorageManager: Failed to load passwords", e);
+    }
+  },
+
+  saveUsersAndAccounts() {
+    try {
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem(this.KEYS.CUSTOM_USERS, JSON.stringify(ACCOUNTS_DATABASE));
+        localStorage.setItem(this.KEYS.PASSWORDS, JSON.stringify(this.getPasswordsMap()));
+        localStorage.setItem(this.KEYS.LAST_UPDATED, Date.now().toString());
+      }
+    } catch (e) {
+      console.warn("StorageManager: Failed to save custom users", e);
+    }
+    this.triggerSync();
+  },
+
+  loadUsersAndAccounts() {
+    try {
+      if (typeof localStorage === "undefined") return;
+      const raw = localStorage.getItem(this.KEYS.CUSTOM_USERS);
+      if (raw !== null) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          ACCOUNTS_DATABASE.length = 0;
+          ACCOUNTS_DATABASE.push(...parsed);
+          USERS_DATA.length = 0;
+          parsed.forEach(a => {
+            USERS_DATA.push({
+              id: a.id,
+              username: a.username,
+              aliases: a.aliases || [a.username],
+              name: a.name,
+              role: a.role,
+              roleName: a.roleName,
+              gov: a.gov,
+              permission: a.permission,
+              status: a.status,
+              twoFactor: a.twoFactor
+            });
+          });
+        }
+      }
+    } catch (e) {
+      console.warn("StorageManager: Failed to load custom users", e);
     }
   },
 
@@ -1957,7 +2128,8 @@ const StorageManager = {
       students: STUDENTS_DATA,
       centers: CENTERS_DATA,
       auditLog: AUDIT_LOG_DATA.slice(0, 500),
-      userPasswords: this.getPasswordsMap()
+      userPasswords: this.getPasswordsMap(),
+      customAccounts: ACCOUNTS_DATABASE
     };
 
     if (typeof window !== "undefined") {

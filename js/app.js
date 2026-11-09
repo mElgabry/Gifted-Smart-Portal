@@ -1495,6 +1495,66 @@ const AuthServer = {
       newPassword: '6666',
       message: `تم عمل Reset لحساب (${target.name}) وجعل كلمة المرور هي "6666"`
     };
+  },
+
+  async addUser(actorUserId, newAccount) {
+    const addUserEndpoint = '/api/v1/auth/add-user';
+    const res = await fetch(addUserEndpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ actorUserId, newAccount })
+    });
+    const data = await res.json();
+    if (!res.ok || data.status === 'error') {
+      throw new Error(data.message || 'فشل إضافة المستخدم');
+    }
+    return data;
+  },
+
+  async handleServerAddUser(actorUserId, newAccount) {
+    await new Promise(r => setTimeout(r, 200));
+    const actor = ACCOUNTS_DATABASE.find(a => a.id === actorUserId);
+    if (!actor || (actor.id !== 'u_abeer' && actor.id !== 'u_mohamed')) {
+      throw new Error('عذراً: صلاحية إضافة مستخدمين جديدة مكفولة حصرياً لمدير عام الإدارة العامة للموهوبين ومدير إدارة التعلم الذكي.');
+    }
+    if (!newAccount || !newAccount.username || !newAccount.name) {
+      throw new Error('بيانات المستخدم الجديد غير مكتملة.');
+    }
+    return {
+      status: 'success',
+      code: 200,
+      message: `تمت إضافة المستخدم (${newAccount.name}) بنجاح واعتماد حسابه.`
+    };
+  },
+
+  async deleteUser(actorUserId, targetUserId) {
+    const deleteUserEndpoint = '/api/v1/auth/delete-user';
+    const res = await fetch(deleteUserEndpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ actorUserId, targetUserId })
+    });
+    const data = await res.json();
+    if (!res.ok || data.status === 'error') {
+      throw new Error(data.message || 'فشل حذف المستخدم');
+    }
+    return data;
+  },
+
+  async handleServerDeleteUser(actorUserId, targetUserId) {
+    await new Promise(r => setTimeout(r, 200));
+    const actor = ACCOUNTS_DATABASE.find(a => a.id === actorUserId);
+    if (!actor || (actor.id !== 'u_abeer' && actor.id !== 'u_mohamed')) {
+      throw new Error('عذراً: صلاحية حذف الحسابات مكفولة حصرياً لمدير عام الإدارة العامة للموهوبين ومدير إدارة التعلم الذكي.');
+    }
+    if (targetUserId === 'u_abeer' || targetUserId === 'u_mohamed') {
+      throw new Error('لا يمكن حذف الحسابين القياديين الأساسيين.');
+    }
+    return {
+      status: 'success',
+      code: 200,
+      message: 'تم حذف حساب المستخدم نهائياً من المنظومة بنجاح.'
+    };
   }
 };
 
@@ -1548,6 +1608,34 @@ window.fetch = async function(input, init) {
     try {
       const body = init && init.body ? JSON.parse(init.body) : {};
       const result = await AuthServer.handleServerResetPassword(body.actorUserId, body.targetUserId);
+      return new Response(JSON.stringify(result), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (err) {
+      return new Response(JSON.stringify({ status: 'error', code: 403, message: err.message }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  } else if (url && url.includes('/api/v1/auth/add-user')) {
+    try {
+      const body = init && init.body ? JSON.parse(init.body) : {};
+      const result = await AuthServer.handleServerAddUser(body.actorUserId, body.newAccount);
+      return new Response(JSON.stringify(result), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (err) {
+      return new Response(JSON.stringify({ status: 'error', code: 403, message: err.message }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+  } else if (url && url.includes('/api/v1/auth/delete-user')) {
+    try {
+      const body = init && init.body ? JSON.parse(init.body) : {};
+      const result = await AuthServer.handleServerDeleteUser(body.actorUserId, body.targetUserId);
       return new Response(JSON.stringify(result), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
@@ -1667,6 +1755,7 @@ const StorageManager = {
     CENTERS: "moe_gifted_centers",
     AUDIT_LOG: "moe_gifted_audit_log",
     PASSWORDS: "moe_gifted_passwords",
+    CUSTOM_USERS: "moe_gifted_custom_accounts",
     LAST_UPDATED: "moe_gifted_last_updated"
   },
 
@@ -1730,6 +1819,43 @@ const StorageManager = {
     if (Array.isArray(data.auditLog) && data.auditLog.length > 0) {
       AUDIT_LOG_DATA.length = 0;
       AUDIT_LOG_DATA.push(...data.auditLog);
+      modified = true;
+    }
+
+    if (Array.isArray(data.customAccounts) && data.customAccounts.length > 0) {
+      data.customAccounts.forEach(ca => {
+        const existIdx = ACCOUNTS_DATABASE.findIndex(a => a.id === ca.id);
+        if (existIdx === -1) {
+          ACCOUNTS_DATABASE.push(ca);
+        } else {
+          ACCOUNTS_DATABASE[existIdx] = Object.assign(ACCOUNTS_DATABASE[existIdx], ca);
+        }
+        const uExistIdx = USERS_DATA.findIndex(u => u.id === ca.id);
+        if (uExistIdx === -1) {
+          USERS_DATA.push({
+            id: ca.id,
+            username: ca.username,
+            aliases: ca.aliases || [ca.username],
+            name: ca.name,
+            role: ca.role,
+            roleName: ca.roleName,
+            gov: ca.gov,
+            permission: ca.permission,
+            status: ca.status,
+            twoFactor: ca.twoFactor
+          });
+        }
+      });
+      modified = true;
+    }
+
+    if (Array.isArray(data.deletedUserIds) && data.deletedUserIds.length > 0) {
+      data.deletedUserIds.forEach(delId => {
+        const aIdx = ACCOUNTS_DATABASE.findIndex(a => a.id === delId);
+        if (aIdx !== -1) ACCOUNTS_DATABASE.splice(aIdx, 1);
+        const uIdx = USERS_DATA.findIndex(u => u.id === delId);
+        if (uIdx !== -1) USERS_DATA.splice(uIdx, 1);
+      });
       modified = true;
     }
 
@@ -1866,8 +1992,53 @@ const StorageManager = {
           });
         }
       }
+      this.loadUsersAndAccounts();
     } catch (e) {
       console.warn("StorageManager: Failed to load passwords", e);
+    }
+  },
+
+  saveUsersAndAccounts() {
+    try {
+      if (typeof localStorage !== "undefined") {
+        localStorage.setItem(this.KEYS.CUSTOM_USERS, JSON.stringify(ACCOUNTS_DATABASE));
+        localStorage.setItem(this.KEYS.PASSWORDS, JSON.stringify(this.getPasswordsMap()));
+        localStorage.setItem(this.KEYS.LAST_UPDATED, Date.now().toString());
+      }
+    } catch (e) {
+      console.warn("StorageManager: Failed to save custom users", e);
+    }
+    this.triggerSync();
+  },
+
+  loadUsersAndAccounts() {
+    try {
+      if (typeof localStorage === "undefined") return;
+      const raw = localStorage.getItem(this.KEYS.CUSTOM_USERS);
+      if (raw !== null) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          ACCOUNTS_DATABASE.length = 0;
+          ACCOUNTS_DATABASE.push(...parsed);
+          USERS_DATA.length = 0;
+          parsed.forEach(a => {
+            USERS_DATA.push({
+              id: a.id,
+              username: a.username,
+              aliases: a.aliases || [a.username],
+              name: a.name,
+              role: a.role,
+              roleName: a.roleName,
+              gov: a.gov,
+              permission: a.permission,
+              status: a.status,
+              twoFactor: a.twoFactor
+            });
+          });
+        }
+      }
+    } catch (e) {
+      console.warn("StorageManager: Failed to load custom users", e);
     }
   },
 
@@ -1957,7 +2128,8 @@ const StorageManager = {
       students: STUDENTS_DATA,
       centers: CENTERS_DATA,
       auditLog: AUDIT_LOG_DATA.slice(0, 500),
-      userPasswords: this.getPasswordsMap()
+      userPasswords: this.getPasswordsMap(),
+      customAccounts: ACCOUNTS_DATABASE
     };
 
     if (typeof window !== "undefined") {
@@ -2726,8 +2898,8 @@ function canAccessAuditAndUsers(user = state.currentUser) {
   return user.role === 'general_admin' && !user.gov;
 }
 
-// Permission Helper: Only Director General (u_abeer) and Director of Smart Learning (u_mohamed) can reset any account password to "6666"
-function canResetUserPasswords(user = state.currentUser) {
+// Permission Helper: Only Director General (u_abeer) and Director of Smart Learning (u_mohamed) can add/delete users and reset passwords to "6666"
+function canManageUsers(user = state.currentUser) {
   if (!user) return false;
   return user.id === 'u_abeer' ||
          user.id === 'u_mohamed' ||
@@ -2737,9 +2909,19 @@ function canResetUserPasswords(user = state.currentUser) {
          (user.roleName && user.roleName.includes('مدير إدارة التعلم الذكي'));
 }
 
+function canResetUserPasswords(user = state.currentUser) {
+  return canManageUsers(user);
+}
+
 function updateAuditViewVisibility(user = state.currentUser) {
   const canAccess = canAccessAuditAndUsers(user);
-  const canReset = canResetUserPasswords(user);
+  const canManage = canManageUsers(user);
+
+  const btnAddUser = document.getElementById('btn-add-user');
+  if (btnAddUser) {
+    btnAddUser.classList.toggle('hidden', !canManage);
+    btnAddUser.style.display = canManage ? 'inline-flex' : 'none';
+  }
 
   const navAuditBtn = document.getElementById('nav-btn-audit') || document.querySelector('.nav-btn[data-view="audit"]');
   if (navAuditBtn) {
@@ -5783,12 +5965,26 @@ function renderUsersTable() {
       ? `<span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full border border-amber-300">مضبوط على (6666)</span>`
       : `<span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full">${u.status}</span>`;
 
-    const actionHtml = canReset
-      ? `<button type="button" class="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-[10px] font-bold transition shadow-sm inline-flex items-center gap-1" onclick="handleAdminResetUserPassword('${u.id}')">
-           <i class="fa-solid fa-rotate-left"></i>
-           <span>عمل Reset (6666)</span>
-         </button>`
-      : `<span class="text-slate-400 text-[10px] font-semibold">مخول لمدير عام الإدارة ومدير التعلم الذكي</span>`;
+    const isProtectedCore = u.id === 'u_abeer' || u.id === 'u_mohamed';
+    let actionHtml = '';
+    if (canReset) {
+      actionHtml = `
+        <div class="flex items-center justify-center gap-1.5 flex-wrap">
+          <button type="button" class="px-2 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-[10px] font-bold transition shadow-sm inline-flex items-center gap-1" onclick="handleAdminResetUserPassword('${u.id}')" title="إعادة تعيين كلمة المرور إلى 6666">
+            <i class="fa-solid fa-rotate-left"></i>
+            <span>Reset (6666)</span>
+          </button>
+          ${!isProtectedCore ? `
+          <button type="button" class="px-2 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[10px] font-bold transition shadow-sm inline-flex items-center gap-1" onclick="handleAdminDeleteUser('${u.id}')" title="حذف هذا الحساب نهائياً من المنظومة">
+            <i class="fa-solid fa-trash-can"></i>
+            <span>حذف</span>
+          </button>
+          ` : `<span class="text-[10px] text-slate-400 font-bold px-1.5 py-0.5 bg-slate-100 rounded">حساب قيادي</span>`}
+        </div>
+      `;
+    } else {
+      actionHtml = `<span class="text-slate-400 text-[10px] font-semibold">مخول لمدير عام الإدارة ومدير التعلم الذكي</span>`;
+    }
 
     return `
       <tr class="hover:bg-slate-50 border-b text-[11px]">
@@ -6246,6 +6442,204 @@ async function handleAdminResetUserPassword(targetUserId) {
 }
 
 
+
+
+// ==========================================
+// USER CREATION & DELETION (ADD & DELETE USERS)
+// ==========================================
+
+function openAddUserModal() {
+  if (!canManageUsers()) {
+    showToast('عذراً: صلاحية إضافة مستخدمين جديدة مكفولة حصرياً لمدير عام الإدارة العامة للموهوبين ومدير إدارة التعلم الذكي.', 'error');
+    return;
+  }
+  const modal = document.getElementById('modal-add-user');
+  if (!modal) return;
+  const form = document.getElementById('form-add-user');
+  if (form) form.reset();
+  const alertEl = document.getElementById('add-user-alert');
+  if (alertEl) alertEl.classList.add('hidden');
+  const passInp = document.getElementById('nu-password');
+  if (passInp) passInp.value = '6666';
+
+  // Populate governorates dropdown
+  const govSelect = document.getElementById('nu-gov');
+  if (govSelect) {
+    govSelect.innerHTML = '<option value="">-- اختر المحافظة --</option>' +
+      Object.keys(GOV_DEPTS).map(g => `<option value="${g}">${g}</option>`).join('');
+  }
+  handleRoleChangeInAddUserModal();
+  modal.classList.remove('hidden');
+}
+
+function closeAddUserModal() {
+  document.getElementById('modal-add-user')?.classList.add('hidden');
+}
+
+function handleRoleChangeInAddUserModal() {
+  const role = document.getElementById('nu-role')?.value;
+  const govContainer = document.getElementById('nu-gov-container');
+  const roleNameInp = document.getElementById('nu-rolename');
+  const permInp = document.getElementById('nu-permission');
+
+  if (role === 'general_admin') {
+    if (govContainer) govContainer.classList.add('hidden');
+    if (roleNameInp && !roleNameInp.value) roleNameInp.value = 'مسئول بالإدارة العامة للموهوبين والتعلم الذكي';
+    if (permInp && !permInp.value) permInp.value = 'صلاحية عرض وتعديل لكافة المديريات (شامل)';
+  } else if (role === 'general_viewer') {
+    if (govContainer) govContainer.classList.add('hidden');
+    if (roleNameInp && !roleNameInp.value) roleNameInp.value = 'خبير بالإدارة العامة للموهوبين والتعلم الذكي';
+    if (permInp && !permInp.value) permInp.value = 'صلاحية عرض لكافة المديريات (View Only)';
+  } else {
+    if (govContainer) govContainer.classList.remove('hidden');
+    const gov = document.getElementById('nu-gov')?.value;
+    if (roleNameInp) roleNameInp.value = gov ? `مدير إدارة الموهوبين بمديرية ${gov}` : 'مدير إدارة موهوبين بمديرية';
+    if (permInp) permInp.value = gov ? `عرض وإدخال وتعديل طلاب مديرية ${gov} وإداراتها` : 'عرض وإدخال وتعديل طلاب المديرية';
+  }
+}
+
+function showAddUserAlert(msg, type = 'error') {
+  const el = document.getElementById('add-user-alert');
+  if (!el) return;
+  el.className = `mb-4 p-3 rounded-xl text-xs font-bold flex items-center gap-2 ${
+    type === 'error'
+      ? 'bg-rose-50 text-rose-700 border border-rose-200'
+      : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+  }`;
+  el.innerHTML = `<i class="fa-solid ${type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-check'}"></i><span>${msg}</span>`;
+  el.classList.remove('hidden');
+}
+
+async function handleAddUserSubmit(event) {
+  event.preventDefault();
+  if (!canManageUsers()) {
+    showToast('عذراً: غير مصرح لك بإضافة مستخدمين.', 'error');
+    return;
+  }
+
+  const name = (document.getElementById('nu-name')?.value || '').trim();
+  const username = (document.getElementById('nu-username')?.value || '').trim().toLowerCase();
+  const password = (document.getElementById('nu-password')?.value || '').trim() || '6666';
+  const role = document.getElementById('nu-role')?.value || 'directorate_manager';
+  const gov = role === 'directorate_manager' ? (document.getElementById('nu-gov')?.value || '') : '';
+  const roleName = (document.getElementById('nu-rolename')?.value || '').trim() || (role === 'general_admin' ? 'مسئول بالإدارة العامة' : (role === 'general_viewer' ? 'خبير بالإدارة العامة' : `مدير إدارة الموهوبين بمديرية ${gov}`));
+  const permission = (document.getElementById('nu-permission')?.value || '').trim() || (role === 'general_admin' ? 'صلاحية عرض وتعديل لكافة المديريات (شامل)' : (role === 'general_viewer' ? 'صلاحية عرض لكافة المديريات (View Only)' : `عرض وإدخال وتعديل طلاب مديرية ${gov}`));
+  const twoFactor = Boolean(document.getElementById('nu-twofactor')?.checked);
+
+  if (!name || !username) {
+    showAddUserAlert('يرجى كتابة الاسم الكامل واسم المستخدم.');
+    return;
+  }
+  if (role === 'directorate_manager' && !gov) {
+    showAddUserAlert('يرجى اختيار المحافظة التابع لها مدير إدارة الموهوبين.');
+    return;
+  }
+
+  // Check unique username
+  const exists = ACCOUNTS_DATABASE.some(a => a.username.toLowerCase() === username || (a.aliases && a.aliases.map(x => x.toLowerCase()).includes(username)));
+  if (exists) {
+    showAddUserAlert('اسم المستخدم هذا مستخدم بالفعل بحساب آخر، يرجى اختيار اسم مستخدم مختلف.');
+    return;
+  }
+
+  const newId = 'u_' + username.replace(/[^a-z0-9]/gi, '_') + '_' + Date.now().toString().slice(-4);
+  const newAccount = {
+    id: newId,
+    username: username,
+    aliases: [username],
+    password: password,
+    name: name,
+    role: role,
+    roleName: roleName,
+    gov: gov,
+    category: role === 'general_admin' ? 'الإدارة العامة (عرض وتعديل شامل)' : (role === 'general_viewer' ? 'الإدارة المركزية والخبراء (عرض فقط)' : 'مسئولو المديريات التعليمية (27 محافظة)'),
+    permission: permission,
+    status: 'نشط',
+    twoFactor: twoFactor
+  };
+
+  try {
+    const res = await AuthServer.addUser(state.currentUser.id, newAccount);
+    ACCOUNTS_DATABASE.push(newAccount);
+    USERS_DATA.push({
+      id: newAccount.id,
+      username: newAccount.username,
+      aliases: newAccount.aliases,
+      name: newAccount.name,
+      role: newAccount.role,
+      roleName: newAccount.roleName,
+      gov: newAccount.gov,
+      permission: newAccount.permission,
+      status: newAccount.status,
+      twoFactor: newAccount.twoFactor
+    });
+
+    if (typeof StorageManager !== 'undefined' && typeof StorageManager.saveUsersAndAccounts === 'function') {
+      StorageManager.saveUsersAndAccounts();
+    }
+
+    logAudit(
+      'إضافة مستخدم جديد',
+      `الحساب: ${name} (${username})`,
+      `قام ${state.currentUser.roleName} (${state.currentUser.name}) بإضافة حساب جديد بالدور: ${roleName}`
+    );
+
+    closeAddUserModal();
+    showToast(res.message || `تمت إضافة المستخدم (${name}) بنجاح.`, 'success');
+    renderUsersTable();
+  } catch (err) {
+    showAddUserAlert(err.message || 'فشل إضافة المستخدم.');
+  }
+}
+
+async function handleAdminDeleteUser(targetUserId) {
+  if (!canManageUsers()) {
+    showToast('عذراً: صلاحية حذف الحسابات مكفولة حصرياً لمدير عام الإدارة العامة للموهوبين ومدير إدارة التعلم الذكي.', 'error');
+    return;
+  }
+
+  const targetAcc = ACCOUNTS_DATABASE.find(a => a.id === targetUserId);
+  if (!targetAcc) {
+    showToast('لم يتم العثور على الحساب المراد حذفه.', 'error');
+    return;
+  }
+
+  if (targetAcc.id === 'u_abeer' || targetAcc.id === 'u_mohamed') {
+    showToast('لا يمكن حذف حساب مدير عام الإدارة العامة أو مدير إدارة التعلم الذكي لكونهما الحسابين القياديين الأساسيين للمنظومة.', 'error');
+    return;
+  }
+
+  const confirmed = window.confirm(`تنبيه أمني هام:
+هل أنت متأكد من رغبتك في حذف حساب (${targetAcc.name} - ${targetAcc.username}) نهائياً من المنظومة؟
+
+لن يتمكن هذا المستخدم من الدخول للنظام بعد الحذف.`);
+  if (!confirmed) return;
+
+  try {
+    const res = await AuthServer.deleteUser(state.currentUser.id, targetUserId);
+
+    const aIdx = ACCOUNTS_DATABASE.findIndex(a => a.id === targetUserId);
+    if (aIdx !== -1) ACCOUNTS_DATABASE.splice(aIdx, 1);
+
+    const uIdx = USERS_DATA.findIndex(u => u.id === targetUserId);
+    if (uIdx !== -1) USERS_DATA.splice(uIdx, 1);
+
+    if (typeof StorageManager !== 'undefined' && typeof StorageManager.saveUsersAndAccounts === 'function') {
+      StorageManager.saveUsersAndAccounts();
+    }
+
+    logAudit(
+      'حذف مستخدم',
+      `الحساب: ${targetAcc.name} (${targetAcc.username})`,
+      `قام ${state.currentUser.roleName} (${state.currentUser.name}) بحذف حساب المستخدم نهائياً من النظام`
+    );
+
+    showToast(res.message || `تم حذف حساب (${targetAcc.name}) بنجاح.`, 'success');
+    renderUsersTable();
+  } catch (err) {
+    showToast(err.message || 'تعذر حذف المستخدم.', 'error');
+  }
+}
 
 document.addEventListener('DOMContentLoaded', () => {
   // Ensure persistent data is loaded from LocalStorage
