@@ -1,0 +1,653 @@
+{
+  "algorithm": "bcrypt ($2b$12$)",
+  "masterKeyHash": "$2b$12$a70/G9cDxl.pXsKJSRLUfefJC3FYMdVijg3O6.30uipFg0OEmchRe",
+  "users": [
+    {
+      "id": "u_abeer",
+      "username": "abeer.anwar",
+      "aliases": [
+        "abeer.anwar"
+      ],
+      "password_hash": "$2b$12$G7ykcxb4TGtwXwGMTku86OV4RFH6R//My0abP2XHtaddUs/yjHgWu",
+      "name": "أ. عبير محمد أنور",
+      "role": "general_admin",
+      "roleName": "مدير عام الإدارة العامة للموهوبين والتعلم الذكي",
+      "gov": "",
+      "category": "الإدارة العامة (عرض وتعديل شامل)",
+      "permission": "صلاحية عرض وتعديل لكافة المديريات (شامل)",
+      "status": "نشط",
+      "twoFactor": true
+    },
+    {
+      "id": "u_mohamed",
+      "username": "mohamed.bayoumi",
+      "aliases": [
+        "mohamed.bayoumi"
+      ],
+      "password_hash": "$2b$12$9Vy.AgMbM2F5aWIPvaz56.gdzhB2.n2TckikurcYlGrFp7pi0eHFm",
+      "name": "أ. محمد بيومي الجابري",
+      "role": "general_admin",
+      "roleName": "مدير إدارة التعلم الذكي بالإدارة العامة للموهوبين والتعلم الذكي",
+      "gov": "",
+      "category": "الإدارة العامة (عرض وتعديل شامل)",
+      "permission": "صلاحية عرض وتعديل لكافة المديريات (شامل)",
+      "status": "نشط",
+      "twoFactor": true
+    },
+    {
+      "id": "u_islam",
+      "username": "islam.saeed",
+      "aliases": [
+        "islam.saeed"
+      ],
+      "password_hash": "$2b$12$gn5OuRxDW1ZWJL4wTVu/wu5mtYQcQnckLTZSILLECw6L7l.JdtHd6",
+      "name": "أ. إسلام محمد سعيد",
+      "role": "general_admin",
+      "roleName": "مدير إدارة المتابعة بالإدارة العامة للموهوبين والتعلم الذكي",
+      "gov": "",
+      "category": "الإدارة العامة (عرض وتعديل شامل)",
+      "permission": "صلاحية عرض وتعديل لكافة المديريات (شامل)",
+      "status": "نشط",
+      "twoFactor": true
+    },
+    {
+      "id": "v_sahar",
+      "username": "sahar.alfy",
+      "aliases": [
+        "sahar.alfy"
+      ],
+      "password_hash": "$2b$12$wQl23Wq.WcGE1Qst34Pwue3ZJGA4BTmVoVn/0NtInrsc2AEiEy1H6",
+      "name": "أ. سحر الألفي",
+      "role": "general_viewer",
+      "roleName": "رئيس الإدارة المركزية لمدارس التربية الخاصة",
+      "gov": "",
+      "category": "الإدارة المركزية والخبراء (عرض فقط)",
+      "permission": "صلاحية عرض لكافة المديريات (View Only)",
+      "status": "نشط",
+      "twoFactor": true
+    },
+    {
+      "id": "v_rasha",
+      "username": "rasha.farouk",
+      "aliases": [
+        "rasha.farouk",
+        "rasha.mohamed"
+      ],
+      "password_hash": "$2b$12$p.FXSZuI4MPrRgZ1/8a1deAvXelD/YIYaJy9x5gi9fZlIRHfcVmPu",
+      "name": "د. رشا فاروق",
+      "role": "general_viewer",
+      "roleName": "خبير بالإدارة العامة للموهوبين والتعلم الذكي",
+      "gov": "",
+      "category": "الإدارة المركزية والخبراء (عرض فقط)",
+      "permission": "صلاحية عرض لكافة المديريات (View Only)",
+      "status": "نشط",
+      "twoFactor": true
+    },
+    {
+      "id": "v_marwa",
+      "username": "marwa.zakariya",
+      "aliases": [
+        "marwa.zakariya"
+      ],
+      "password_hash": "$2b$12$cVSmo.WXpTJfWqHkGZ2PqeF1MxvRvmO0WWKu9UBYjOzB6KAxQ7IZu",
+      "name": "أ. مروة زكريا",
+      "role": "general_viewer",
+      "roleName": "خبير بالإدارة العامة للموهوبين والتعلم الذكي",
+      "gov": "",
+      "category": "الإدارة المركزية والخبراء (عرض فقط)",
+      "permission": "صلاحية عرض لكافة المديريات (View Only)",
+      "status": "نشط",
+      "twoFactor": true
+    },
+    {
+      "id": "v_rehab",
+      "username": "rehab.abdelrahim",
+      "aliases": [
+        "rehab.abdelrahim",
+        "rehab.mohamed"
+      ],
+      "password_hash": "$2b$12$uuSxK2I3ndBbgXNk4ppJZegD1WHk3IVIm7BwW7qB53waQakubIKIO",
+      "name": "د. رحاب عبدالرحيم",
+      "role": "general_viewer",
+      "roleName": "خبير بالإدارة العامة للموهوبين والتعلم الذكي",
+      "gov": "",
+      "category": "الإدارة المركزية والخبراء (عرض فقط)",
+      "permission": "صلاحية عرض لكافة المديريات (View Only)",
+      "status": "نشط",
+      "twoFactor": true
+    },
+    {
+      "id": "v_doaa",
+      "username": "doaa.abdelkarim",
+      "aliases": [
+        "doaa.abdelkarim",
+        "doaa.mohamed"
+      ],
+      "password_hash": "$2b$12$o5J3uvCebvuWYSGSOYPp0.Z0qlCpxKLa0agrIfjEJvB9p0hHzN8WW",
+      "name": "أ. دعاء عبد الكريم",
+      "role": "general_viewer",
+      "roleName": "خبير بالإدارة العامة للموهوبين والتعلم الذكي",
+      "gov": "",
+      "category": "الإدارة المركزية والخبراء (عرض فقط)",
+      "permission": "صلاحية عرض لكافة المديريات (View Only)",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "v_sherif",
+      "username": "sherif.amin",
+      "aliases": [
+        "sherif.amin"
+      ],
+      "password_hash": "$2b$12$ajHTstNIODSBMYhP.JTB.uaFMbY5V7OUrJeS8v57CyKqTb0n/PWiG",
+      "name": "أ. شريف أمين",
+      "role": "general_viewer",
+      "roleName": "خبير بالإدارة العامة للموهوبين والتعلم الذكي",
+      "gov": "",
+      "category": "الإدارة المركزية والخبراء (عرض فقط)",
+      "permission": "صلاحية عرض لكافة المديريات (View Only)",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "v_enas",
+      "username": "enas.mohamed",
+      "aliases": [
+        "enas.mohamed"
+      ],
+      "password_hash": "$2b$12$vgThhfjyybIt2agVwPNugu4B8RBi1Zy5H44FfseEi94h9Gfrb4fYC",
+      "name": "د. إيناس محمد",
+      "role": "general_viewer",
+      "roleName": "خبير بالإدارة العامة للموهوبين والتعلم الذكي",
+      "gov": "",
+      "category": "الإدارة المركزية والخبراء (عرض فقط)",
+      "permission": "صلاحية عرض لكافة المديريات (View Only)",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "v_ali",
+      "username": "ali.farouk",
+      "aliases": [
+        "ali.farouk"
+      ],
+      "password_hash": "$2b$12$cYUlJTe2omaJTvH61aQKg.0xinkOKwRtiN.5K0FXHp9faMuUQzEhy",
+      "name": "أ. علي فاروق",
+      "role": "general_viewer",
+      "roleName": "خبير بالإدارة العامة للموهوبين والتعلم الذكي",
+      "gov": "",
+      "category": "الإدارة المركزية والخبراء (عرض فقط)",
+      "permission": "صلاحية عرض لكافة المديريات (View Only)",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "v_mai",
+      "username": "mai.samir",
+      "aliases": [
+        "mai.samir"
+      ],
+      "password_hash": "$2b$12$uxiLQ8QCGXFuAIJ4olAf/exVJBUagV7tLSHIpTjdFQpnNoPaLKPAi",
+      "name": "أ. مي سمير",
+      "role": "general_viewer",
+      "roleName": "خبير بالإدارة العامة للموهوبين والتعلم الذكي",
+      "gov": "",
+      "category": "الإدارة المركزية والخبراء (عرض فقط)",
+      "permission": "صلاحية عرض لكافة المديريات (View Only)",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "v_saeed",
+      "username": "saeed.abdelaziz",
+      "aliases": [
+        "saeed.abdelaziz",
+        "hussein.mohamed"
+      ],
+      "password_hash": "$2b$12$80zr9KGcDmM7lAd0gjmpr.eRGqa6ii6nbDQwZQQeue3GbH2xI2ZFy",
+      "name": "أ. سعيد عبد العزيز",
+      "role": "general_viewer",
+      "roleName": "خبير بالإدارة العامة للموهوبين والتعلم الذكي",
+      "gov": "",
+      "category": "الإدارة المركزية والخبراء (عرض فقط)",
+      "permission": "صلاحية عرض لكافة المديريات (View Only)",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_cairo",
+      "username": "mgr_cairo",
+      "aliases": [
+        "mgr_cairo"
+      ],
+      "password_hash": "$2b$12$ErFIlYMuYoL.dgPT7uuIbemUmYm0e5yFo6s50PcIAHieRjLk.YnTO",
+      "name": "محمد محمود",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية القاهرة",
+      "gov": "القاهرة",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية القاهرة وإداراتها",
+      "status": "نشط",
+      "twoFactor": true
+    },
+    {
+      "id": "mgr_giza",
+      "username": "mgr_giza",
+      "aliases": [
+        "mgr_giza"
+      ],
+      "password_hash": "$2b$12$Rq6SffdVMmM54riwpxycSuCadq0S9kxe5d9/lBOYQiWyVGAaE9KmW",
+      "name": "نجلاء فرغلي عبد العال فرغلي",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية الجيزة",
+      "gov": "الجيزة",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية الجيزة وإداراتها",
+      "status": "نشط",
+      "twoFactor": true
+    },
+    {
+      "id": "mgr_alex",
+      "username": "mgr_alex",
+      "aliases": [
+        "mgr_alex"
+      ],
+      "password_hash": "$2b$12$dm9xT7f/j3Rhsme/0LUtcOC0mK27KIb26CzjAXDO7ikFnxz3onW0m",
+      "name": "محمود مرزوق أحمد حسان",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية الاسكندرية",
+      "gov": "الاسكندرية",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية الاسكندرية وإداراتها",
+      "status": "نشط",
+      "twoFactor": true
+    },
+    {
+      "id": "mgr_portsaid",
+      "username": "mgr_portsaid",
+      "aliases": [
+        "mgr_portsaid"
+      ],
+      "password_hash": "$2b$12$QheOg4FT2WjrjmGTC1aQN.HrAFnC1ebkIVGXhaWxJbR6gV5zJjON2",
+      "name": "منى محمد محمد الأزهري",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية بور سعيد",
+      "gov": "بور سعيد",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية بورسعيد وإداراتها",
+      "status": "نشط",
+      "twoFactor": true
+    },
+    {
+      "id": "mgr_redsea",
+      "username": "mgr_redsea",
+      "aliases": [
+        "mgr_redsea"
+      ],
+      "password_hash": "$2b$12$TCRRcSKWqHwDsQHcRETfJ.SJJUu/7dUl/d1iW6fCBTS8/DWf9oMEK",
+      "name": "روماني بشرى بولس",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية البحر الأحمر",
+      "gov": "البحر الأحمر",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية البحر الأحمر وإداراتها",
+      "status": "نشط",
+      "twoFactor": true
+    },
+    {
+      "id": "mgr_sohag",
+      "username": "mgr_sohag",
+      "aliases": [
+        "mgr_sohag"
+      ],
+      "password_hash": "$2b$12$x.4x1ZoXZXMzDaGk1aIYU.8B6dzu4Umiyyl9Tcc99iWqyTKuDFZzu",
+      "name": "مرفت سيد أحمد درويش",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية سوهاج",
+      "gov": "سوهاج",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية سوهاج وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_dakahlia",
+      "username": "mgr_dakahlia",
+      "aliases": [
+        "mgr_dakahlia"
+      ],
+      "password_hash": "$2b$12$aBp/zlraMrzK7w5pwYS8Xu5iPrRY0aeRJPl0AFPOAONyf2PV2A5OW",
+      "name": "د / نيفين محمد عبد العزيز",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية الدقهلية",
+      "gov": "الدقهلية",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية الدقهلية وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_beheira",
+      "username": "mgr_beheira",
+      "aliases": [
+        "mgr_beheira"
+      ],
+      "password_hash": "$2b$12$y7dfF4M4hXcSw/dv.xRLdeSWyEb.Fp8bwKpPPeG5nZXGwmrG9RGPa",
+      "name": "رحاب محمد عبد الوهاب",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية البحيرة",
+      "gov": "البحيرة",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية البحيرة وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_ismailia",
+      "username": "mgr_ismailia",
+      "aliases": [
+        "mgr_ismailia"
+      ],
+      "password_hash": "$2b$12$kLsfCETkfsf4md6.UVEtQefQHFbtyqVMpDvKrwnCwiu2CjSPC0HO.",
+      "name": "حنان إسماعيل حسن",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية الاسماعيلية",
+      "gov": "الاسماعيلية",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية الاسماعيلية وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_suez",
+      "username": "mgr_suez",
+      "aliases": [
+        "mgr_suez"
+      ],
+      "password_hash": "$2b$12$tjoEc0HRzYOUwELx5P22megTwi/QbCoTlLB.IwVqRp4l0W/sOhfua",
+      "name": "نجلاء صالح العسيلي",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية السويس",
+      "gov": "السويس",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية السويس وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_menofia",
+      "username": "mgr_menoufia",
+      "aliases": [
+        "mgr_menoufia",
+        "mgr_menofia"
+      ],
+      "password_hash": "$2b$12$XCfkqKoxMt2tLy.S6O53A.cQ/1VE9hlB0ZZaCbX235S5Zf9vXrvxS",
+      "name": "نهاد سعيد عبد الخالق",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية المنوفية",
+      "gov": "المنوفية",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية المنوفية وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_fayoum",
+      "username": "mgr_fayoum",
+      "aliases": [
+        "mgr_fayoum"
+      ],
+      "password_hash": "$2b$12$JdOaSsc1CSiPB//9HYMWX.xSrBEC/WzaKyb/t.aDctfhgWvZxJaRu",
+      "name": "طارق مصطفى محمود",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية الفيوم",
+      "gov": "الفيوم",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية الفيوم وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_asyut",
+      "username": "mgr_asyut",
+      "aliases": [
+        "mgr_asyut"
+      ],
+      "password_hash": "$2b$12$vzxpBHepJT9o7zUQWGPsBuP2gTlP94MiEs8BJg0Tzl6n3lww4Fvm.",
+      "name": "محمد عبد المالك حسان",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية أسيوط",
+      "gov": "أسيوط",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية أسيوط وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_aswan",
+      "username": "mgr_aswan",
+      "aliases": [
+        "mgr_aswan"
+      ],
+      "password_hash": "$2b$12$CdSQ8M0m09OnOJKYanZ7WuYfzD3zKd6L8.eG/2HEEl3Erx7RQiLd2",
+      "name": "هالة عزت رياض",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية أسوان",
+      "gov": "أسوان",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية أسوان وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_benisuef",
+      "username": "mgr_benisuef",
+      "aliases": [
+        "mgr_benisuef"
+      ],
+      "password_hash": "$2b$12$b3Jts2LLRdRFPbXktAwf8.bZ1jv1AGvym5cLfF21dP9w6Aq2wse/.",
+      "name": "إيناس نجيب إبراهيم الكردي",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية بني سويف",
+      "gov": "بني سويف",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية بني سويف وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_matrouh",
+      "username": "mgr_matrouh",
+      "aliases": [
+        "mgr_matrouh"
+      ],
+      "password_hash": "$2b$12$0N01S4bvODI5QQZ6S2YzC.5LNi0FSAi4/I7n77zsbTgnUZtGZIr1e",
+      "name": "بهاء رمزي كامل",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية مطروح",
+      "gov": "مطروح",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية مطروح وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_newvalley",
+      "username": "mgr_newvalley",
+      "aliases": [
+        "mgr_newvalley"
+      ],
+      "password_hash": "$2b$12$oV8mdGCp8uo/oYG.Y5.jz.6bdw8fncIeHGPTSEBYjfnFVZFYQMm.K",
+      "name": "ناهد يونس عبد العزيز",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية الوادي الجديد",
+      "gov": "الوادي الجديد",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية الوادي الجديد وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_northsinai",
+      "username": "mgr_nsinai",
+      "aliases": [
+        "mgr_nsinai",
+        "mgr_northsinai"
+      ],
+      "password_hash": "$2b$12$bnEyoGod11AR5ow8VxGB1.eURX7QcfhVdtGSTpCj6XIaPfXYrQOua",
+      "name": "مروه عبد العزيز سالم",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية شمال سيناء",
+      "gov": "شمال سيناء",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية شمال سيناء وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_southsinai",
+      "username": "mgr_ssinai",
+      "aliases": [
+        "mgr_ssinai",
+        "mgr_southsinai"
+      ],
+      "password_hash": "$2b$12$mFDek0Nln1M15VyL5jLIseeNaJYsi2vsh3g4KrBzxk5SIgGkNCVkK",
+      "name": "أبو السعود أبو الفتوح",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية جنوب سيناء",
+      "gov": "جنوب سيناء",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية جنوب سيناء وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_damietta",
+      "username": "mgr_damietta",
+      "aliases": [
+        "mgr_damietta"
+      ],
+      "password_hash": "$2b$12$vG0bkSmYd7celyKdqzH4d.JQHPnyuJtEkWe40jbxdUnCdC4cvbs9.",
+      "name": "أماني أحمد طراف",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية دمياط",
+      "gov": "دمياط",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية دمياط وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_qalyubia",
+      "username": "mgr_qalyubia",
+      "aliases": [
+        "mgr_qalyubia"
+      ],
+      "password_hash": "$2b$12$6wD2U2eCmMWOfCu/X170pupf5/aGVw0PDgio1ZkhsN4LFiU821o9m",
+      "name": "عزت محمد الشحات عبد الرحمن",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية القليوبية",
+      "gov": "القليوبية",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية القليوبية وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_sharqia",
+      "username": "mgr_sharqia",
+      "aliases": [
+        "mgr_sharqia"
+      ],
+      "password_hash": "$2b$12$UPYY1Y7k6eFtJpbgyOKrSeybcd4U8jUqJAgC78Vjjn4AfPh.bJvci",
+      "name": "سميرة السيد أحمد محمد",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية الشرقية",
+      "gov": "الشرقية",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية الشرقية وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_minya",
+      "username": "mgr_minya",
+      "aliases": [
+        "mgr_minya"
+      ],
+      "password_hash": "$2b$12$KjeHndmEbSczPsqfgKkN7OrJMNqe6SgocazfRrhd2oA9f6SxRTbnK",
+      "name": "مجدي نادى بشرى",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية المنيا",
+      "gov": "المنيا",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية المنيا وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_gharbia",
+      "username": "mgr_gharbia",
+      "aliases": [
+        "mgr_gharbia"
+      ],
+      "password_hash": "$2b$12$G9PkUSV7dn2B5Nb93AE5yuQxAJuq6q7iZXrx6tqlISrwyo3IUtxT2",
+      "name": "د / منى أحمد إبراهيم",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية الغربية",
+      "gov": "الغربية",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية الغربية وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_kafr",
+      "username": "mgr_kafr",
+      "aliases": [
+        "mgr_kafr"
+      ],
+      "password_hash": "$2b$12$ko4/CsKtXe.tbXrlx5QcwulPam8H.QCDMFLjwTdHgfmLvX.k/VoYO",
+      "name": "د /هشام فهمي السيد",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية كفر الشيخ",
+      "gov": "كفر الشيخ",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية كفر الشيخ وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_qena",
+      "username": "mgr_qena",
+      "aliases": [
+        "mgr_qena"
+      ],
+      "password_hash": "$2b$12$alVtrF9RkfGA1c6v.WZjL.ZKRKvaMAvdKZcEzJDxVBM26/7jLD4H2",
+      "name": "د / مها محمد محسن",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية قنا",
+      "gov": "قنا",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية قنا وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    },
+    {
+      "id": "mgr_luxor",
+      "username": "mgr_luxor",
+      "aliases": [
+        "mgr_luxor"
+      ],
+      "password_hash": "$2b$12$rPOQkGmfvqcl9l/fUJq28eORYVbRKGVef7srMbP0fwPrU7EXitVaO",
+      "name": "إيمان محمد مصطفى",
+      "role": "directorate_manager",
+      "roleName": "مدير إدارة الموهوبين بمديرية الأقصر",
+      "gov": "الأقصر",
+      "category": "مسئولو المديريات التعليمية (27 محافظة)",
+      "permission": "عرض وإدخال وتعديل طلاب مديرية الأقصر وإداراتها",
+      "status": "نشط",
+      "twoFactor": false
+    }
+  ]
+}
